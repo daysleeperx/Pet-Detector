@@ -1,9 +1,13 @@
 #!/bin/bash
 
-sudo apt-get -y install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
-sudo apt-get -y install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
-sudo apt-get -y install libxvidcore-dev libx264-dev
-sudo apt-get -y install qt4-dev-tools libatlas-base-dev
+apt-get update
+apt-get install apt-file
+apt-file update
+
+apt-get -y install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
+apt-get -y install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+apt-get -y install libxvidcore-dev libx264-dev
+apt-get -y install qt4-dev-tools libatlas-base-dev
 
 pip3 install -r requirements.txt
 
