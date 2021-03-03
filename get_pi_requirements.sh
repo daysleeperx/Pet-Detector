@@ -1,8 +1,7 @@
 #!/bin/bash
 
 apt-get update
-apt-get install apt-file
-apt-file update
+apt-get dist-upgrade
 
 apt-get -y install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
 apt-get -y install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
