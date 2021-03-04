@@ -39,4 +39,3 @@ class VideoStream:
     def stop(self):
         """Indicate that the camera and thread should be stopped."""
         self.stopped = True
-        self.stream.release()
