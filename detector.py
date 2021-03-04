@@ -1,3 +1,5 @@
+"""Pet Detector."""
+
 import configparser
 import os
 import time
@@ -20,6 +22,7 @@ LABELMAP = config.get('tensorflow', 'labels')
 MIN_THRESHOLD = float(config.get('tensorflow', 'threshold'))
 RES_WIDTH, RES_HEIGHT = config.get('webcam', 'resolution').split('x')
 IMG_WIDTH, IMG_HEIGHT = int(RES_WIDTH), int(RES_HEIGHT)
+MQTT_TOPIC = config.get('mqtt', 'topic')
 EDGE_TPU = config.getboolean('tensorflow', 'edgetpu')
 
 CWD_PATH = os.getcwd()
@@ -30,7 +33,8 @@ PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_NAME, LABELMAP)
 def load_labels(path: str) -> List[str]:
     """Load labels from file."""
     with open(path, 'r') as f:
-        return [line.strip() for line in f.readlines()][1:]
+        labels = [line.strip() for line in f.readlines()][1:]
+    return labels
 
 
 def init_interpreter(path_to_model: str, edge_tpu=False) -> Interpreter:
@@ -83,18 +87,18 @@ def annotate_objects(boxes, classes, scores, frame, labels, threshold):
     need to force them to be within image using max() and min()
     """
     annotated_objects = []
-    for i in range(len(scores)):
-        if threshold < scores[i] <= 1.0:
-            ymin, xmin = int(max(1, (boxes[i][0] * IMG_HEIGHT))), int(max(1, (boxes[i][1] * IMG_WIDTH)))
-            ymax, xmax = int(min(IMG_HEIGHT, (boxes[i][2] * IMG_HEIGHT))), int(min(IMG_WIDTH, (boxes[i][3] * IMG_WIDTH)))
+    for (box, cls, score) in zip(boxes, classes, scores):
+        if threshold < score <= 1.0:
+            ymin, xmin = int(max(1, (box[0] * IMG_HEIGHT))), int(max(1, (box[1] * IMG_WIDTH)))
+            ymax, xmax = int(min(IMG_HEIGHT, (box[2] * IMG_HEIGHT))), int(min(IMG_WIDTH, (box[3] * IMG_WIDTH)))
 
-            object_name = labels[int(classes[i])]
-            label = f'{object_name}: {int(scores[i] * 100)}%'
+            object_name = labels[int(cls)]
+            label = f'{object_name}: {int(score * 100)}%'
 
             draw_bounding_box(frame, xmax, xmin, ymax, ymin)
             draw_label(frame, label, xmin, ymin)
-            annotated_objects.append(object_name)
 
+            annotated_objects.append(object_name)
     return annotated_objects
 
 
@@ -137,10 +141,10 @@ def run_detection():
 
         if cat_counter >= 20:
             log(f'CAT DETECTED, cat count: {cat_counter}')
-            publish(mqtt_client, 'volumio/playback/playPlaylist', 'Cat Music', log)
+            publish(mqtt_client, MQTT_TOPIC, 'Cat Music', log)
             cat_counter = 0
 
-        cv.putText(frame, 'FPS: {0:.2f}'.format(frame_rate_calc), (30, 50),
+        cv.putText(frame, f'FPS: {frame_rate_calc:.2f}', (30, 50),
                    cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0),2, cv.LINE_AA)
         cv.imshow('Pet detector', frame)
 

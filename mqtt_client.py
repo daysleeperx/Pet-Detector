@@ -1,3 +1,5 @@
+"""MQTT client utilities."""
+
 import configparser
 import os
 import secrets
@@ -12,6 +14,8 @@ MQTT_BROKER = config.get('mqtt', 'broker')
 
 
 def connect_mqtt(logger=lambda msg: print(msg)) -> mqtt.Client:
+    """Create client and connect to broker."""
+
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
             logger('Connected to MQTT Broker!')
@@ -25,6 +29,7 @@ def connect_mqtt(logger=lambda msg: print(msg)) -> mqtt.Client:
 
 
 def publish(client, topic, message, logger=lambda msg: print(msg)):
+    """Publish message to specified topic."""
     result = client.publish(topic, message)
     status = result[0]
 
