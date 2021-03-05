@@ -9,7 +9,7 @@ class VideoStream:
 
     def __init__(self, resolution=(640, 480), framerate=30):
         """Initialize the PiCamera and the camera image stream."""
-        self.stream = cv.VideoCapture(-1)
+        self.stream = cv.VideoCapture(0)
         self.stream.set(cv.CAP_PROP_FOURCC, cv.VideoWriter_fourcc(*'MJPG'))
         self.stream.set(3, resolution[0])
         self.stream.set(4, resolution[1])
