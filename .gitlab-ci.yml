@@ -1,0 +1,10 @@
+build-docker-image:
+  stage: build
+  script:
+    - pwd
+    - echo $DISPLAY
+
+deploy-rpi:
+  stage: deploy
+  script:
+    - pwd
