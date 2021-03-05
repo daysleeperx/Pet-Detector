@@ -2,6 +2,7 @@ build-docker-image:
   stage: build
   script:
     - pwd
+    - python3 -m venv iti0215-pet-detector-env
     - source iti0215-pet-detector-env/bin/activate
     - chmod +x get_pi_requirements.sh
     - ./get_pi_requirements.sh
