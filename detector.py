@@ -23,6 +23,7 @@ MIN_THRESHOLD = float(config.get('tensorflow', 'threshold'))
 RES_WIDTH, RES_HEIGHT = config.get('webcam', 'resolution').split('x')
 IMG_WIDTH, IMG_HEIGHT = int(RES_WIDTH), int(RES_HEIGHT)
 MQTT_TOPIC = config.get('mqtt', 'topic')
+PLAYLIST = config.get('volumio', 'playlist')
 EDGE_TPU = config.getboolean('tensorflow', 'edgetpu')
 
 CWD_PATH = os.getcwd()
@@ -141,11 +142,11 @@ def run_detection():
 
         if cat_counter >= 20:
             log(f'CAT DETECTED, cat count: {cat_counter}')
-            publish(mqtt_client, MQTT_TOPIC, 'Cat Music', log)
+            publish(mqtt_client, MQTT_TOPIC, PLAYLIST, log)
             cat_counter = 0
 
         cv.putText(frame, f'FPS: {frame_rate_calc:.2f}', (30, 50),
-                   cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0),2, cv.LINE_AA)
+                   cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2, cv.LINE_AA)
         cv.imshow('Pet detector', frame)
 
         t2 = cv.getTickCount()
@@ -155,6 +156,7 @@ def run_detection():
         if cv.waitKey(1) == ord('q'):
             break
 
+    mqtt_client.loop_stop()
     cv.destroyAllWindows()
     videostream.stop()
 
