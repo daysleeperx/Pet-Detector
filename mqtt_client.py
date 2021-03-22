@@ -11,6 +11,8 @@ config.read("config.ini")
 
 CLIENT_ID = f'python-mqtt-{secrets.token_hex(16)}'
 MQTT_BROKER = config.get('mqtt', 'broker')
+MQTT_USERNAME = config.get('mqtt', 'username')
+MQTT_PASSWORD = config.get('mqtt', 'password')
 
 
 def connect_mqtt(logger=lambda msg: print(msg)) -> mqtt.Client:
@@ -24,6 +26,7 @@ def connect_mqtt(logger=lambda msg: print(msg)) -> mqtt.Client:
 
     client = mqtt.Client(CLIENT_ID)
     client.on_connect = on_connect
+    client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
     client.connect(MQTT_BROKER)
     return client
 
