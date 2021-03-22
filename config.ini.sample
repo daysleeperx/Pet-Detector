@@ -11,7 +11,7 @@ edgetpu = false
 [mqtt]
 broker = 127.0.0.1
 username = user
-password = user
+password = test
 topic = test/topic
 
 [volumio]
