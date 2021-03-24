@@ -9,10 +9,16 @@ Example configuration can be found in `config.ini.sample`.
 ## Installation
 *Compatible only with Rasbpian Buster or Rasbpian Stretch*
 
+Camera needs to be enabled in `raspi-config`
+
+Raspberry Pi needs to be updated
+```bash
+sudo apt-get update
+sudo apt-get dist-upgrade
+```
+
 start with `venv`
 ```bash
-
-
 chmod +x venv_start.sh
 ./venv_start.sh
 ```
